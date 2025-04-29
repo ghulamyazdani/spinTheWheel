@@ -5,10 +5,17 @@ import Video from "../assets/video/spinwinvideo.mp4"; // Import your video file
 
 export const Route = createFileRoute("/")({
   component: Index,
+  validateSearch: (search) => {
+    // Validate the search parameters if needed
+    return {
+      type: search.type,
+    };
+  },
 });
 
 function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { type } = Route.useSearch();
 
   // Auto-play the video when component mounts
   useEffect(() => {
@@ -40,6 +47,7 @@ function Index() {
       {/* Button to redirect to spin wheel */}
       <Link
         to="/spinthewheel"
+        search={{ type }} // Pass the type parameter to the spin wheel route
         className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-[#390C1C] hover:bg-orange-700 text-white text-2xl md:text-3xl font-bold py-6 px-12 rounded-full w-3/4 max-w-2xl text-center shadow-xl transition-all duration-300 border-2 border-yellow-400 animate-pulse hover:animate-none"
       >
         <div className="flex items-center justify-center space-x-3">

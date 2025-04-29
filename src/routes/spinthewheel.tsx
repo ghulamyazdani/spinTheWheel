@@ -2,9 +2,16 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useEffect, useState } from "react";
 import Video from "../assets/video/spinwinvideo.mp4";
 import SpinWheelComponent from "../components/SpinWheel";
+import Restroworks from "../assets/image/Restroworks White.png";
 
 export const Route = createFileRoute("/spinthewheel")({
   component: SpinTheWheelPage,
+  validateSearch: (search) => {
+    // Validate the search parameters if needed
+    return {
+      type: search.type,
+    };
+  },
 });
 
 function SpinTheWheelPage() {
@@ -13,12 +20,55 @@ function SpinTheWheelPage() {
 
   const [result, setResult] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const { type } = Route.useSearch();
 
-  const segments = ["😅 Better Luck Next Time!", "🥃 Get a free shot"];
-  const segmentColors = [
-    "bg-gradient-to-r from-[#8C1B38] to-[#640F28]",
-    "bg-gradient-to-r from-[#AA203F] to-[#8C1B38]",
+  // const segments = [
+  //   "😅 Better Luck Next Time!",
+  //   "🥃 Get a free shot",
+  //   "😅 Better Luck Next Time!",
+  //   "🥃 Get a free shot",
+  //   "😅 Better Luck Next Time!",
+  //   "🥃 Get a free shot",
+  // ];
+
+  const MorningSegments = [
+    "🚬 Free Smoke on the House",
+    "😅Better Luck Next Time!",
+    "🎒 Win a Bag",
+    "🚬 Free Smoke on the House",
+    "😅Better Luck Next Time!",
+    "🚬 Free Smoke on the House",
   ];
+
+  const EveningSegments = [
+    "😅 Better Luck Next Time!",
+    "🥃 Get a Quick Shot",
+    "😅 Better Luck Next Time!",
+    "🥃 Get a Quick Shot",
+    "😅 Better Luck Next Time!",
+    "🥃 Get a Quick Shot",
+  ];
+  const colors = [
+    "#7A5BA7",
+    "#CC59A1",
+    "#F5936C",
+    "#FFC659",
+    "#4B79BC",
+    "#95CB77",
+  ];
+  // const segments = ["😅 Better Luck Next Time!", "🥃 Get a free shot"];
+  // const segmentColors = [
+  //   "bg-gradient-to-r from-[#8C1B38] to-[#640F28]",
+  //   "bg-gradient-to-r from-[#AA203F] to-[#8C1B38]",
+  // ];
+
+  // Choose segments based on type param
+  const segments =
+    type === "morning"
+      ? MorningSegments
+      : type === "evening"
+        ? EveningSegments
+        : EveningSegments; // default to evening
 
   useEffect(() => {
     if (videoRef.current) {
@@ -29,11 +79,6 @@ function SpinTheWheelPage() {
     const timer = setTimeout(() => setIsLoaded(true), 300);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleSpinComplete = (winningSegment: string) => {
-    setResult(winningSegment);
-    setShowModal(true);
-  };
 
   const closeModal = () => {
     setShowModal(false);
@@ -60,12 +105,11 @@ function SpinTheWheelPage() {
       <div
         className={`absolute top-12 left-0 right-0 text-center z-20 transition-opacity duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}`}
       >
-        <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-          <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-amber-500">
-            Restroworks
-          </span>
-        </div>
-        <div className="w-24 h-1 bg-gradient-to-r from-yellow-300 to-amber-500 mx-auto rounded-full"></div>
+        <img
+          src={Restroworks}
+          alt="Restroworks Logo"
+          className="mx-auto w-[30rem] mb-4"
+        />
       </div>
       {/* Title */}
       <div
@@ -84,13 +128,14 @@ function SpinTheWheelPage() {
       >
         <SpinWheelComponent
           segments={segments}
-          segmentColors={segmentColors}
-          onSpinComplete={handleSpinComplete}
+          colors={colors}
+          type={`${type}`}
         />
 
         {/* Go Back Button */}
         <Link
           to="/"
+          search={{ type }} // Pass the type parameter to the spin wheel route
           className="mt-16 text-white hover:text-yellow-300 transition-colors duration-300 flex items-center z-30"
         >
           <svg
@@ -110,7 +155,6 @@ function SpinTheWheelPage() {
           Go Back
         </Link>
       </div>
-      // ...existing code...
       {/* Footer text */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center z-30">
         <div className="text-yellow-300 text-xl md:text-2xl font-medium animate-pulse">
@@ -122,6 +166,7 @@ function SpinTheWheelPage() {
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-40">
         <Link
           to="/"
+          search={{ type }} // Pass the type parameter to the spin wheel route
           className="bg-gradient-to-r from-[#640F28] to-[#8C1B38] hover:from-[#8C1B38] hover:to-[#AA203F] text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg flex items-center"
         >
           <svg

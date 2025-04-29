@@ -1,41 +1,82 @@
 import React, { useRef, useState } from "react";
+import Corbi from "../assets/image/corbi.png";
 
-const segments = [
+interface SpinWheelProps {
+  segments: string[];
+  colors: string[];
+  type: string;
+}
+
+const MORNING_PERMUTATION = [
+  "🚬 Free Smoke on the House",
   "😅 Better Luck Next Time!",
-  "🥃 Get a free shot",
+  "🎒 Win a Bag",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
   "😅 Better Luck Next Time!",
-  "🥃 Get a free shot",
+  "🎒 Win a Bag",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
   "😅 Better Luck Next Time!",
-  "🥃 Get a free shot",
-];
-const colors = [
-  "#7A5BA7",
-  "#CC59A1",
-  "#F5936C",
-  "#FFC659",
-  "#4B79BC",
-  "#95CB77",
 ];
 
-const SpinWheel: React.FC = () => {
+const EVENING_PERMUTATION = [
+  "😅 Better Luck Next Time!",
+  "🥃 Get a Quick Shot",
+  "😅 Better Luck Next Time!",
+  "😅 Better Luck Next Time!",
+  "🥃 Get a Quick Shot",
+  "😅 Better Luck Next Time!",
+  "😅 Better Luck Next Time!",
+  "🥃 Get a Quick Shot",
+  "😅 Better Luck Next Time!",
+  "😅 Better Luck Next Time!",
+];
+// 7 "😅", 3 "🥃" in every 10 spins
+
+const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
   const [spinning, setSpinning] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [spinCount, setSpinCount] = useState(0);
   const wheelRef = useRef<SVGSVGElement>(null);
 
   // Responsive size: 95vw, max 800px
   const size = Math.min(window.innerWidth * 0.95, 900);
+
+  // Get the result for the current spin based on permutation
+  function getPermutationResult(spinNumber: number) {
+    if (type === "morning") {
+      return MORNING_PERMUTATION[(spinNumber - 1) % 10];
+    }
+    // Default to evening permutation
+    return EVENING_PERMUTATION[(spinNumber - 1) % 10];
+  }
 
   const spin = () => {
     if (spinning) return;
     setSpinning(true);
     setSelected(null);
 
-    const winner = Math.floor(Math.random() * segments.length);
+    // Determine the result for this spin
+    const nextSpinCount = spinCount + 1;
+    const resultLabel = getPermutationResult(nextSpinCount);
+
+    // Find the index of the resultLabel in the segments for this spin
+    // If there are multiple, pick a random one
+    const matchingIndexes = segments
+      .map((seg, idx) => (seg === resultLabel ? idx : -1))
+      .filter((idx) => idx !== -1);
+    const winner =
+      matchingIndexes.length > 0
+        ? matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)]
+        : Math.floor(Math.random() * segments.length);
+
     setTimeout(() => {
       setSelected(winner);
       setSpinning(false);
       setShowModal(true);
+      setSpinCount(nextSpinCount);
     }, 2500);
 
     // Calculate the angle so the selected segment lands at the pointer (top)
@@ -57,12 +98,20 @@ const SpinWheel: React.FC = () => {
     }, 2600);
   };
 
-  // ...existing code...
   const renderSegments = () => {
     const angle = 360 / segments.length;
     return segments.map((label, i) => {
       const rotate = i * angle;
-      // Place text along the radius, horizontal from center to edge
+      // Calculate the middle angle for the segment
+      const midAngle = rotate + angle / 2;
+      // Position text at the middle of the arc radius
+      const textRadius = size / 2 - size * 0.22;
+
+      // Calculate text position along the arc center
+      const rad = ((midAngle - 90) * Math.PI) / 180.0;
+      const textX = size / 2 + textRadius * Math.cos(rad);
+      const textY = size / 2 + textRadius * Math.sin(rad);
+
       return (
         <g key={i}>
           <path
@@ -77,32 +126,48 @@ const SpinWheel: React.FC = () => {
             stroke="#fff"
             strokeWidth={size * 0.01}
           />
-          <text
-            x={size / 2}
-            y={size * 0.13}
-            textAnchor="middle"
-            fontSize={19}
-            fontWeight="bold"
-            fill="#333"
-            // Rotate the text to the segment center, so it is horizontal from center to edge
-            transform={`rotate(${rotate + angle / 2} ${size / 2} ${size / 2})`}
-            style={{
-              userSelect: "none",
-              fontFamily: "system-ui, sans-serif",
-              letterSpacing: 1,
-              textShadow: "0 2px 8px #fff8",
-              whiteSpace: "pre",
-              dominantBaseline: "middle",
-            }}
+          <foreignObject
+            x={textX - size * 0.13}
+            y={textY - size * 0.06}
+            width={size * 0.3}
+            height={size * 0.12}
+            transform={`rotate(${midAngle} ${textX} ${textY})`}
+            style={{ overflow: "visible" }}
           >
-            {label}
-          </text>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                fontSize: 25,
+                fontWeight: "bold",
+                color: "#333",
+                fontFamily: "system-ui, sans-serif",
+                textShadow: "0 2px 8px #fff8",
+                overflow: "hidden",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+                lineHeight: 1.1,
+                padding: 0,
+                margin: 0,
+                background: "transparent",
+                pointerEvents: "none",
+                userSelect: "none",
+                // writingMode: "vertical-rl", // vertical text
+                rotate: `${90}deg`,
+                textOrientation: "mixed",
+              }}
+            >
+              {label}
+            </div>
+          </foreignObject>
         </g>
       );
     });
   };
-  // ...existing code...
-  // ...existing code...
 
   // Helper to describe an SVG arc
   function describeArc(
@@ -141,9 +206,6 @@ const SpinWheel: React.FC = () => {
       y: cy + r * Math.sin(rad),
     };
   }
-
-  // Simple confetti SVG for demonstration
-  // ...existing code...
 
   // Improved Confetti: more shapes, colors, and animation
   const Confetti = () => {
@@ -194,21 +256,39 @@ const SpinWheel: React.FC = () => {
           />
         );
       }
-      // triangle
-      const points = [
-        `${x},${y}`,
-        `${x + size / 2},${y + size}`,
-        `${x - size / 2},${y + size}`,
-      ].join(" ");
+      // triangle: tip points toward center
+      // Calculate triangle points so the top points toward the center
+      // const angleRad = (Math.PI / 180) * rotate;
+      const cx = x;
+      const cy = y;
+      const triHeight = size;
+      const triBase = size * 0.8;
+      // The triangle's tip points toward the center (downwards in SVG, so we rotate)
+      const p1 = {
+        x: cx,
+        y: cy,
+      };
+      const p2 = {
+        x: cx - triBase / 2,
+        y: cy + triHeight,
+      };
+      const p3 = {
+        x: cx + triBase / 2,
+        y: cy + triHeight,
+      };
+      // Center of triangle for rotation
+      const centerX = (p1.x + p2.x + p3.x) / 3;
+      const centerY = (p1.y + p2.y + p3.y) / 3;
       return (
         <polygon
           key={i}
-          points={points}
+          points={`${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
           fill={color}
           opacity={0.8}
           style={{
             animation: `fall ${duration}s ${delay}s ease-in forwards, spin ${duration}s linear infinite`,
-            transformOrigin: "center",
+            transform: `rotate(${rotate + 180}deg)`,
+            transformOrigin: `${centerX}% ${centerY}%`,
           }}
         />
       );
@@ -247,8 +327,6 @@ const SpinWheel: React.FC = () => {
       </>
     );
   };
-
-  // ...existing code...
 
   return (
     <div
@@ -292,12 +370,31 @@ const SpinWheel: React.FC = () => {
         >
           {renderSegments()}
         </svg>
+        {/* Corbi image in the center */}
+        <img
+          src={Corbi}
+          alt="Corbi"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: size * 0.22,
+            height: size * 0.22,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "50%",
+            zIndex: 3,
+            pointerEvents: "none",
+            background: "#fff",
+            boxShadow: "0 2px 12px #0002",
+            objectFit: "contain",
+          }}
+        />
         {/* Pointer */}
         <div
           style={{
             position: "absolute",
-            top: -size * 0.06,
-            left: "50%",
+            top: -size * 0.02,
+            left: "38%",
             transform: "translateX(-50%)",
             width: 0,
             height: 0,
@@ -305,6 +402,7 @@ const SpinWheel: React.FC = () => {
             borderRight: `${size * 0.06}px solid transparent`,
             borderBottom: `${size * 0.12}px solid #e74c3c`,
             zIndex: 2,
+            rotate: "180deg",
             pointerEvents: "none",
           }}
         />

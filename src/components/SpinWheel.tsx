@@ -10,29 +10,30 @@ interface SpinWheelProps {
 // 60% Smoke, 20% Bag, 20% Luck in 10 spins
 const MORNING_PERMUTATION = [
   "🚬 Free Smoke on the House",
+  "🎒 Win a Bag",
   "🚬 Free Smoke on the House",
   "🚬 Free Smoke on the House",
+  "👎🏻 Better Luck Next Time!",
   "🚬 Free Smoke on the House",
-  "🚬 Free Smoke on the House",
+  "👎🏻 Better Luck Next Time!",
   "🚬 Free Smoke on the House",
   "🎒 Win a Bag",
-  "🎒 Win a Bag",
-  "👎🏻 Better Luck Next Time!",
-  "👎🏻 Better Luck Next Time!",
+  "🚬 Free Smoke on the House",
 ];
 
 // 70% Shot, 30% Luck in 10 spins
 const EVENING_PERMUTATION = [
   "🥃 Get a Quick Shot",
   "🥃 Get a Quick Shot",
+  "👎🏻 Better Luck Next Time!",
   "🥃 Get a Quick Shot",
-  "🥃 Get a Quick Shot",
+  "👎🏻 Better Luck Next Time!",
   "🥃 Get a Quick Shot",
   "🥃 Get a Quick Shot",
   "🥃 Get a Quick Shot",
   "👎🏻 Better Luck Next Time!",
-  "👎🏻 Better Luck Next Time!",
-  "👎🏻 Better Luck Next Time!",
+
+  "🥃 Get a Quick Shot",
 ];
 
 const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {

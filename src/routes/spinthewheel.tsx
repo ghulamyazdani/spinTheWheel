@@ -23,17 +23,17 @@ function SpinTheWheelPage() {
   const { type } = Route.useSearch();
 
   // const segments = [
-  //   "😅 Better Luck Next Time!",
+  //   "👎🏻 Better Luck Next Time!",
   //   "🥃 Get a free shot",
-  //   "😅 Better Luck Next Time!",
+  //   "👎🏻 Better Luck Next Time!",
   //   "🥃 Get a free shot",
-  //   "😅 Better Luck Next Time!",
+  //   "👎🏻 Better Luck Next Time!",
   //   "🥃 Get a free shot",
   // ];
 
   const MorningSegments = [
     "🚬 Free Smoke on the House",
-    "😅Better Luck Next Time!",
+    "👎🏻Better Luck Next Time!",
     "🎒 Win a Bag",
     "🚬 Free Smoke on the House",
     "😅Better Luck Next Time!",
@@ -41,11 +41,11 @@ function SpinTheWheelPage() {
   ];
 
   const EveningSegments = [
-    "😅 Better Luck Next Time!",
+    "👎🏻 Better Luck Next Time!",
     "🥃 Get a Quick Shot",
-    "😅 Better Luck Next Time!",
+    "👎🏻 Better Luck Next Time!",
     "🥃 Get a Quick Shot",
-    "😅 Better Luck Next Time!",
+    "👎🏻 Better Luck Next Time!",
     "🥃 Get a Quick Shot",
   ];
   const colors = [
@@ -56,7 +56,7 @@ function SpinTheWheelPage() {
     "#4B79BC",
     "#95CB77",
   ];
-  // const segments = ["😅 Better Luck Next Time!", "🥃 Get a free shot"];
+  // const segments = ["👎🏻 Better Luck Next Time!", "🥃 Get a free shot"];
   // const segmentColors = [
   //   "bg-gradient-to-r from-[#8C1B38] to-[#640F28]",
   //   "bg-gradient-to-r from-[#AA203F] to-[#8C1B38]",
@@ -192,7 +192,7 @@ function SpinTheWheelPage() {
           <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all duration-500 scale-100 opacity-100">
             <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
               {result.includes("Better Luck Next Time")
-                ? "Oh snap! 😅"
+                ? "Oh snap! 👎🏻"
                 : "Congratulations! 🎉"}
             </h2>
 

@@ -9,30 +9,30 @@ interface SpinWheelProps {
 
 const MORNING_PERMUTATION = [
   "🚬 Free Smoke on the House",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
   "🎒 Win a Bag",
   "🚬 Free Smoke on the House",
   "🚬 Free Smoke on the House",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
   "🎒 Win a Bag",
   "🚬 Free Smoke on the House",
   "🚬 Free Smoke on the House",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
 ];
 
 const EVENING_PERMUTATION = [
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
   "🥃 Get a Quick Shot",
-  "😅 Better Luck Next Time!",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
   "🥃 Get a Quick Shot",
-  "😅 Better Luck Next Time!",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
   "🥃 Get a Quick Shot",
-  "😅 Better Luck Next Time!",
-  "😅 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
+  "👎🏻 Better Luck Next Time!",
 ];
-// 7 "😅", 3 "🥃" in every 10 spins
+// 7 "👎🏻", 3 "🥃" in every 10 spins
 
 const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
   const [spinning, setSpinning] = useState(false);
@@ -72,31 +72,33 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
         ? matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)]
         : Math.floor(Math.random() * segments.length);
 
+    // Calculate the angle so the selected segment lands at the pointer (top)
+    const anglePerSegment = 360 / segments.length;
+    const finalRotation =
+      360 - (winner * anglePerSegment + anglePerSegment / 2);
+    const spinRounds = 5;
+    const totalRotation = 360 * spinRounds + finalRotation;
+
+    if (wheelRef.current) {
+      wheelRef.current.style.transition =
+        "transform 2.5s cubic-bezier(0.23, 1, 0.32, 1)";
+      wheelRef.current.style.transform = `rotate(${totalRotation}deg)`;
+    }
+
     setTimeout(() => {
       setSelected(winner);
       setSpinning(false);
       setShowModal(true);
       setSpinCount(nextSpinCount);
-    }, 2500);
 
-    // Calculate the angle so the selected segment lands at the pointer (top)
-    const anglePerSegment = 360 / segments.length;
-    const rotation =
-      360 * 5 + (360 - (winner * anglePerSegment + anglePerSegment / 2));
-    if (wheelRef.current) {
-      wheelRef.current.style.transition =
-        "transform 2.5s cubic-bezier(.17,.67,.83,.67)";
-      wheelRef.current.style.transform = `rotate(${rotation}deg)`;
-    }
-    setTimeout(() => {
+      // Snap to final position with no transition for perfect alignment
       if (wheelRef.current) {
         wheelRef.current.style.transition = "none";
-        wheelRef.current.style.transform = `rotate(${
-          360 - (winner * anglePerSegment + anglePerSegment / 2)
-        }deg)`;
+        wheelRef.current.style.transform = `rotate(${finalRotation}deg)`;
       }
     }, 2600);
   };
+  // ...existing code...
 
   const renderSegments = () => {
     const angle = 360 / segments.length;

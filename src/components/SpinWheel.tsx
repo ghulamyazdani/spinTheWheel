@@ -7,32 +7,33 @@ interface SpinWheelProps {
   type: string;
 }
 
+// 60% Smoke, 20% Bag, 20% Luck in 10 spins
 const MORNING_PERMUTATION = [
   "🚬 Free Smoke on the House",
-  "👎🏻 Better Luck Next Time!",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
+  "🚬 Free Smoke on the House",
   "🎒 Win a Bag",
-  "🚬 Free Smoke on the House",
-  "🚬 Free Smoke on the House",
-  "👎🏻 Better Luck Next Time!",
   "🎒 Win a Bag",
-  "🚬 Free Smoke on the House",
-  "🚬 Free Smoke on the House",
+  "👎🏻 Better Luck Next Time!",
   "👎🏻 Better Luck Next Time!",
 ];
 
+// 70% Shot, 30% Luck in 10 spins
 const EVENING_PERMUTATION = [
-  "👎🏻 Better Luck Next Time!",
+  "🥃 Get a Quick Shot",
+  "🥃 Get a Quick Shot",
+  "🥃 Get a Quick Shot",
+  "🥃 Get a Quick Shot",
+  "🥃 Get a Quick Shot",
+  "🥃 Get a Quick Shot",
   "🥃 Get a Quick Shot",
   "👎🏻 Better Luck Next Time!",
-  "👎🏻 Better Luck Next Time!",
-  "🥃 Get a Quick Shot",
-  "👎🏻 Better Luck Next Time!",
-  "👎🏻 Better Luck Next Time!",
-  "🥃 Get a Quick Shot",
   "👎🏻 Better Luck Next Time!",
   "👎🏻 Better Luck Next Time!",
 ];
-// 7 "👎🏻", 3 "🥃" in every 10 spins
 
 const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
   const [spinning, setSpinning] = useState(false);
@@ -98,18 +99,13 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
       }
     }, 2600);
   };
-  // ...existing code...
 
   const renderSegments = () => {
     const angle = 360 / segments.length;
     return segments.map((label, i) => {
       const rotate = i * angle;
-      // Calculate the middle angle for the segment
       const midAngle = rotate + angle / 2;
-      // Position text at the middle of the arc radius
       const textRadius = size / 2 - size * 0.22;
-
-      // Calculate text position along the arc center
       const rad = ((midAngle - 90) * Math.PI) / 180.0;
       const textX = size / 2 + textRadius * Math.cos(rad);
       const textY = size / 2 + textRadius * Math.sin(rad);
@@ -259,13 +255,10 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
         );
       }
       // triangle: tip points toward center
-      // Calculate triangle points so the top points toward the center
-      // const angleRad = (Math.PI / 180) * rotate;
       const cx = x;
       const cy = y;
       const triHeight = size;
       const triBase = size * 0.8;
-      // The triangle's tip points toward the center (downwards in SVG, so we rotate)
       const p1 = {
         x: cx,
         y: cy,
@@ -278,7 +271,6 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ segments, colors, type }) => {
         x: cx + triBase / 2,
         y: cy + triHeight,
       };
-      // Center of triangle for rotation
       const centerX = (p1.x + p2.x + p3.x) / 3;
       const centerY = (p1.y + p2.y + p3.y) / 3;
       return (
